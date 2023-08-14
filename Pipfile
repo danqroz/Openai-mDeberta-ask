@@ -1,0 +1,26 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+langchain = "*"
+openai = "*"
+faiss-cpu = "*"
+tiktoken = "*"
+pypdf = "*"
+unstructured = "*"
+typer = "*"
+streamlit = "*"
+accelerate = "*"
+bitsandbytes = "*"
+beautifulsoup4 = "*"
+
+[dev-packages]
+ipykernel = "*"
+isort = "*"
+black = "*"
+flake8 = "*"
+
+[requires]
+python_version = "3.10"
