@@ -15,12 +15,18 @@ streamlit = "*"
 accelerate = "*"
 bitsandbytes = "*"
 beautifulsoup4 = "*"
+duckduckgo-search = "*"
+iso639-lang = "*"
+streamlit-toggle-switch = "*"
+transformers = {extras = ["torch"], version = "*"}
+sentence-transformers = "*"
 
 [dev-packages]
 ipykernel = "*"
 isort = "*"
 black = "*"
 flake8 = "*"
+langdetect = "*"
 
 [requires]
 python_version = "3.10"

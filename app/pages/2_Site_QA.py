@@ -1,0 +1,64 @@
+import sys
+import os
+
+project_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(project_dir)
+from models import ask_site
+
+# from ..models import create_knowledge_base, openai_model, utils
+import os
+from io import StringIO
+import streamlit as st
+
+
+if "site_chain" not in st.session_state:
+    st.session_state["site_chain"] = None
+
+
+def sidebar():
+    with st.sidebar:
+        site = st.text_input("Coloque seu site aqui", "https://example.com")
+        scrape = st.checkbox("Todo o site", key="scrape")
+        submitted = st.button("Confirmar")
+        if site and submitted:
+            st.write(f"{site} submetido, carregando modelo")
+            st.session_state["site_chain"] = ask_site.load_site_chain(site, scrape)
+            return
+        return
+
+
+def _ask_site(chain, query):
+    answer, sources = ask_site.run(chain, query)
+    return {"role": "Site_Assistant", "content": answer, "sources": sources}
+
+
+def main():
+    sidebar()
+    if "messages" not in st.session_state:
+        st.session_state["messages"] = [
+            {
+                "role": "Site_Assistant",
+                "content": "Como posso ajudar?",
+                "sources": "code",
+            }
+        ]
+    for msg in st.session_state.messages:
+        st.chat_message(msg["role"]).write(msg["content"])
+
+    if query := st.chat_input():
+        st.session_state.messages.append({"role": "user", "content": query})
+        st.chat_message("user").write(query)
+
+        if not st.session_state["site_chain"]:
+            st.info("Por favor, insira um link para continuar.")
+            st.stop()
+
+        model_response = _ask_site(chain=st.session_state["site_chain"], query=query)
+        st.session_state.messages.append(model_response)
+        st.chat_message("assistant").write(f"{model_response['content']}")
+
+        st.info(f"Essa resposta foi retirada de {model_response['sources']}", icon="ℹ️")
+
+
+if __name__ == "__main__":
+    main()
