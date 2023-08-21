@@ -5,3 +5,7 @@ services:
     build: .
     ports:
       - "8001:81"
+    deploy:
+      resources:
+        limits:
+          memory: 8g
