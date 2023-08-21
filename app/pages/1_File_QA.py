@@ -1,19 +1,27 @@
-import sys
+# import sys
 import os
 
-project_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(project_dir)
+# project_dir = os.path.dirname(os.path.abspath(__file__))
+# sys.path.append(project_dir)
 
 from models import create_knowledge_base, openai_model, mdeberta, utils
 
-import os
 from io import StringIO
 import streamlit as st
 from streamlit_toggle import st_toggle_switch
 
 
+if "openai_change" not in st.session_state:
+    st.session_state["openai_change"] = 1
+
+if "huggingf_change" not in st.session_state:
+    st.session_state["huggingf_change"] = 1
+
 if os.environ.get("OPENAI_API_KEY"):
-    openai_chain = openai_model.load_chain()
+    openai_chain = openai_model.load_chain(st.session_state["openai_change"])
+
+index_hf = mdeberta.load_indexes(index_change=st.session_state["huggingf_change"])
+
 mdeberta_tokenizer, mdeberta_model = mdeberta.load_model()
 
 avatars = {
@@ -44,23 +52,22 @@ def _select_index_names():
 def _save_files(uploaded_files):
     for uploaded_file in uploaded_files:
         path = os.path.join(utils.DATA_PATH, f"{uploaded_file.name}")
-
-        if uploaded_file.type.split("/")[1] == "pdf":
+        if uploaded_file.type.split(os.sep)[1] == "pdf":
             utils.pdf_to_txt(uploaded_file, path)
         else:
-            # To convert to a string based IO:
             stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
-            # To read file as string:
             string_data = stringio.read()
             with open(path, "w", encoding="utf-8") as f:
                 f.write(string_data)
     return None
 
 
-def _create_index_for_files(selected_indexes=[]):
-    st.write("gerando index")
+def _create_index_for_files(selected_indexes):
     for index_name in selected_indexes:
+        st.session_state[f"{index_name}_change"] += 1
+        st.write(f"gerando index para os embeddings: {index_name}")
         create_knowledge_base.create_index(index_name)
+    utils.remove_files()
     st.write("Indexes gerados")
 
 
@@ -70,7 +77,12 @@ def _ask_gpt(query):
 
 
 def _ask_mdeberta(query):
-    answer, sources = mdeberta.run(mdeberta_tokenizer, mdeberta_model, query)
+    answer, sources = mdeberta.run(
+        mdeberta_tokenizer,
+        mdeberta_model,
+        query,
+        index=index_hf,
+    )
     return {"role": "mdeberta", "content": answer, "sources": sources}
 
 
@@ -115,6 +127,8 @@ def _sidebar():
         models_selected = [
             name.lower() for name in options if st_toggle_switch(name, label_after=True)
         ]
+        if "chatgpt" in models_selected:
+            _no_api_key_handler()
 
         with st.expander("Faça o upload dos seu arquivos"):
             selected_embeddings = _select_index_names()
@@ -123,14 +137,12 @@ def _sidebar():
             )
 
             submitted = st.button("Upload")
-            if uploaded_files and submitted:
+            if uploaded_files is not None and submitted:
                 _no_embeddings_selected_handler(selected_embeddings)
 
-            _save_files(uploaded_files)
-            _create_index_for_files(selected_embeddings)
-            submitted = False
-        if "chatgpt" in models_selected:
-            _no_api_key_handler()
+                _save_files(uploaded_files)
+                _create_index_for_files(selected_embeddings)
+                submitted = False
     return models_selected
 
 

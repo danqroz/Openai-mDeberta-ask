@@ -49,15 +49,14 @@ def _clean_text(text):
     return re.sub(r"\s*-\s*", "-", no_spaces_text)
 
 
+def _get_file_name(path):
+    normalized_path = os.path.normpath(path.replace("\\", "/"))
+    basename = os.path.basename(normalized_path)
+    return os.path.splitext(basename)[0]
+
+
 def clean_source(sources):
-    clean_sources = list()
-    for source in sources:
-        basename = os.path.basename(source).rsplit(".", 1)[0]
-        try:
-            clean_sources.append(basename.split("__")[1])
-        except IndexError:
-            clean_sources.append(basename)
-    # clean_sources = [os.path.basename(source) for source in sources]
+    clean_sources = [_get_file_name(source) for source in sources]
     return ", ".join(clean_sources)
 
 
@@ -69,3 +68,9 @@ def pdf_to_txt(file, path):
 
     with open(save_path, "w", encoding="utf-8") as file:
         file.write(cleaned_content)
+
+
+def remove_files():
+    for item in os.listdir(DATA_PATH):
+        if os.path.isfile(item_path := os.path.join(DATA_PATH, item)):
+            os.remove(item_path)

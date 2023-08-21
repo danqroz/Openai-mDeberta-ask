@@ -1,8 +1,8 @@
 import sys
 import os
 
-project_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(project_dir)
+# project_dir = os.path.dirname(os.path.abspath(__file__))
+# sys.path.append(project_dir)
 from models import ask_site
 
 # from ..models import create_knowledge_base, openai_model, utils

@@ -28,24 +28,10 @@ def _clean_llm_response(llm_response):
     return answer, sources
 
 
-# @st.cache_resource
-# def load_chain(openai_api_key):
-#     index = utils.get_index(openai_api_key)
-#     retriever = index.as_retriever(search_kwargs={"k": K})
-
-#     qa_chain = RetrievalQA.from_chain_type(
-#         # llm = OpenAI(temperature=0, model="gpt-3.5-turbo"),
-#         llm=ChatOpenAI(temperature=0, model="gpt-3.5-turbo"),
-#         chain_type="stuff",
-#         retriever=retriever,
-#         return_source_documents=True,
-#         chain_type_kwargs={"prompt": PROMPT},
-#     )
-#     return qa_chain
-
 @st.cache_resource
-def load_chain():
-    index = utils.get_index()
+def load_chain(index_change=0):
+    if index_change:
+        index = utils.get_index("openai")
     retriever = index.as_retriever(search_kwargs={"k": K})
 
     qa_chain = RetrievalQA.from_chain_type(

@@ -18,7 +18,7 @@ DEVICE = (
     else "cpu"
 )
 MIN_SCORE = 2.9
-K = 10
+K = 8
 
 
 def _clean_answer(answer, question):
@@ -83,8 +83,17 @@ def load_model():
     return tokenizer, model
 
 
-def run(tokenizer, model, question):
-    index = utils.get_index()
+@st.cache_resource
+def load_indexes(index_change=0):
+    if index_change:
+        return utils.get_index("huggingf")
+    return utils.get_index("huggingf")
+
+
+def run(tokenizer, model, question, index=None):
+    if index is None:
+        index = load_indexes()
+
     docs = index.similarity_search(question, k=K)
     answers, scores, sources = _answers_from_docs(tokenizer, model, docs, question)
     answer_list = _get_top_answers(answers, scores)

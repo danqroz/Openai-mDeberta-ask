@@ -11,20 +11,14 @@ CHUNK_OVERLAP = 150
 DATA_PATH = utils.DATA_PATH
 
 
-def _remove_files():
-    items = os.listdir(DATA_PATH)
-    for item in items:
-        item_path = os.path.join(DATA_PATH, item)
-        os.remove(item_path)
-
-
 def _check_index_existence(index_path):
     if not os.path.exists(index_path):
         os.makedirs(index_path)
         return None
 
     existent_index = [
-        index.split(".")[0]
+        # index.split(".")[0]
+        os.path.splitext(index)[0]
         for index in os.listdir(index_path)
         if index.endswith(".pkl")
     ]
@@ -55,7 +49,6 @@ def create_index(embedding_name="huggingf"):
     old_index_name = _check_index_existence(index_path)
     chunks = _split_text()
     new_index = FAISS.from_documents(chunks, embeddings)
-    # _remove_files()
     if old_index_name:
         old_index = FAISS.load_local(
             folder_path=index_path,

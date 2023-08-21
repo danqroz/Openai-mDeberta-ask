@@ -1,8 +1,8 @@
+from app.models import utils
 from urllib.parse import urljoin, urlparse
 
 import requests
 import streamlit as st
-import typer
 from bs4 import BeautifulSoup as bs
 
 
@@ -36,7 +36,6 @@ urls = list()
 
 def full_scrape_urls(site):
     domain = urlparse(site).netloc
-    # print(domain)
     response = requests.get(site)
     soup = bs(response.content, "html.parser")
     for link in soup.find_all("a"):
@@ -57,7 +56,6 @@ def scrape_urls(site):
         if href and not href.startswith("#"):  # and (site := site + href) not in url:
             site = urljoin(site, href)
             if site not in urls and domain in site:
-                # print(site)
                 urls.append(site)
 
 
@@ -76,19 +74,12 @@ def _split_text():
         length_function=len,
     )
     chunks = text_splitter.split_documents(documents)
-    print("data split done")
     return chunks
 
 
 def _get_site_data():
-    # if len(urls) > 7:
-    #     urls_ = [urls[0]] + urls[4:7]
-    # else:
-    #     urls_ = urls
-    print(urls)
     loaders = UnstructuredURLLoader(urls=urls)
     data = loaders.load()
-    print(data[0].page_content)
     return data
 
 
@@ -116,22 +107,4 @@ def load_site_chain(site, scrape=False):
 def run(qa_chain, question):
     llm_response = qa_chain(question)
     answer, sources = _clean_llm_response(llm_response)
-    return answer, set(sources)
-
-
-def main(site: str):
-    # scrape_urls(site)
-    qa_chain = load_site_chain(site)
-
-    while True:
-        question = input("Faça uma pergunta: ")
-        if question == "exit":
-            break
-        response = qa_chain(question)
-        answer = response["result"]
-        sources = [source.metadata["source"] for source in response["source_documents"]]
-        print(answer, set(sources))
-
-
-if __name__ == "__main__":
-    typer.run(main)
+    return answer, utils.clean_source(set(sources))
