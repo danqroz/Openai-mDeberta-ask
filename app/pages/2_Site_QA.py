@@ -15,16 +15,31 @@ if "site_chain" not in st.session_state:
     st.session_state["site_chain"] = None
 
 
+def _scrape_handler(site, scrape):
+    if scrape:
+        urls = ask_site.get_urls(site)
+        st.warning(
+            'Ao marcar a opção "Todo o site" será feito a leitura de todas as\
+            páginas do site.',
+            icon="⚠️",
+        )
+        st.write("Fazendo scrape e carregando modelo...")
+        st.session_state["site_chain"] = ask_site.load_site_chain(site=urls)
+    else:
+        st.write("Site submetido, carregando modelo...")
+        st.session_state["site_chain"] = ask_site.load_site_chain(
+            site=[site],
+        )
+    return None
+
+
 def sidebar():
     with st.sidebar:
         site = st.text_input("Coloque seu site aqui", "https://example.com")
         scrape = st.checkbox("Todo o site", key="scrape")
         submitted = st.button("Confirmar")
         if site and submitted:
-            st.write(f"{site} submetido, carregando modelo")
-            st.session_state["site_chain"] = ask_site.load_site_chain(site, scrape)
-            return
-        return
+            _scrape_handler(site, scrape)
 
 
 def _ask_site(chain, query):
@@ -53,7 +68,10 @@ def main():
             st.info("Por favor, insira um link para continuar.")
             st.stop()
 
-        model_response = _ask_site(chain=st.session_state["site_chain"], query=query)
+        model_response = _ask_site(
+            chain=st.session_state["site_chain"], query=query
+        )
+
         st.session_state.messages.append(model_response)
         st.chat_message("assistant").write(f"{model_response['content']}")
 

@@ -14,6 +14,7 @@ from langchain.prompts import PromptTemplate
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
 
+
 CHUNK_SIZE = 1000
 CHUNK_OVERLAP = 150
 
@@ -34,7 +35,14 @@ PROMPT = PromptTemplate(
 urls = list()
 
 
+def _format_link(site):
+    if site.startswith("http"):
+        return site
+    return "https://" + site
+
+
 def full_scrape_urls(site):
+    site = _format_link(site)
     domain = urlparse(site).netloc
     response = requests.get(site)
     soup = bs(response.content, "html.parser")
@@ -83,12 +91,15 @@ def _get_site_data():
     return data
 
 
+def get_urls(site):
+    full_scrape_urls(site)
+    return urls
+
+
 @st.cache_resource
-def load_site_chain(site, scrape=False):
-    if scrape:
-        scrape_urls(site)
-    else:
-        urls.append(site)
+def load_site_chain(site):
+    if not urls:
+        urls.extend(site)
 
     chunks = _split_text()
     embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
@@ -107,4 +118,4 @@ def load_site_chain(site, scrape=False):
 def run(qa_chain, question):
     llm_response = qa_chain(question)
     answer, sources = _clean_llm_response(llm_response)
-    return answer, utils.clean_source(set(sources))
+    return answer, set(sources)

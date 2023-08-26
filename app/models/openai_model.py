@@ -35,7 +35,6 @@ def load_chain(index_change=0):
     retriever = index.as_retriever(search_kwargs={"k": K})
 
     qa_chain = RetrievalQA.from_chain_type(
-        # llm = OpenAI(temperature=0, model="gpt-3.5-turbo"),
         llm=ChatOpenAI(temperature=0, model="gpt-3.5-turbo"),
         chain_type="stuff",
         retriever=retriever,
