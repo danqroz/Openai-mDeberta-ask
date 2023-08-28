@@ -20,6 +20,7 @@ iso639-lang = "*"
 streamlit-toggle-switch = "*"
 transformers = {extras = ["torch"], version = "*"}
 sentence-transformers = "*"
+langdetect = "*"
 
 [dev-packages]
 ipykernel = "*"

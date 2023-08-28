@@ -1,35 +1,34 @@
-import sys
-import os
-
-project_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(project_dir)
-from models import ask_site
-
-# from ..models import create_knowledge_base, openai_model, utils
-import os
-from io import StringIO
+from models import duck_go
 import streamlit as st
-
-
-if "site_chain" not in st.session_state:
-    st.session_state["site_chain"] = None
 
 
 def sidebar():
     with st.sidebar:
-        site = st.text_input("Coloque seu site aqui", "https://example.com")
-        scrape = st.checkbox("Todo o site", key="scrape")
+        url = st.text_input("Coloque seu site aqui", "https://example.com")
         submitted = st.button("Confirmar")
-        if site and submitted:
-            st.write(f"{site} submetido, carregando modelo")
-            st.session_state["site_chain"] = ask_site.load_site_chain(site, scrape)
-            return
-        return
+        if url and submitted:
+            with st.spinner("Site submetido, carregando modelo..."):
+                url = duck_go.clean_url(url)
+                st.session_state["chat_model"] = duck_go.load_model()
+                st.session_state["translate_chain"] = duck_go.load_translate_chain()
+                st.session_state["url"] = url
+                st.session_state["site_language"] = duck_go.get_languages(url=url)
 
 
-def _ask_site(chain, query):
-    answer, sources = ask_site.run(chain, query)
-    return {"role": "Site_Assistant", "content": answer, "sources": sources}
+def _ask_duck_go(url, query, chat_model):
+    answer = duck_go.run(
+        url=url,
+        query=query,
+        chat_model=chat_model,
+        user_lang=st.session_state["user_language"],
+    )
+    return {"role": "Duck-go_Assistant", "content": answer, "sources": url}
+
+
+def update_tranlated_prompt(site_lang):
+    st.session_state["translate_chain"] = duck_go.check_chain_language(
+        chain=st.session_state["translate_chain"], language=site_lang
+    )
 
 
 def main():
@@ -46,18 +45,28 @@ def main():
         st.chat_message(msg["role"]).write(msg["content"])
 
     if query := st.chat_input():
+        if "user_language" not in st.session_state:
+            user_language = duck_go.get_languages(query=query)
+            st.session_state["user_language"] = user_language
+
         st.session_state.messages.append({"role": "user", "content": query})
         st.chat_message("user").write(query)
 
-        if not st.session_state["site_chain"]:
+        if st.session_state["user_language"] != st.session_state["site_language"]:
+            update_tranlated_prompt(st.session_state["site_language"])
+            query = duck_go.translate_query(query, st.session_state["translate_chain"])
+
+        if "chat_model" not in st.session_state:
             st.info("Por favor, insira um link para continuar.")
             st.stop()
-
-        model_response = _ask_site(chain=st.session_state["site_chain"], query=query)
-        st.session_state.messages.append(model_response)
-        st.chat_message("assistant").write(f"{model_response['content']}")
-
-        st.info(f"Essa resposta foi retirada de {model_response['sources']}", icon="ℹ️")
+        with st.spinner("Aguardade um instante..."):
+            model_response = _ask_duck_go(
+                url=st.session_state["url"],
+                query=query,
+                chat_model=st.session_state["chat_model"],
+            )
+            st.session_state.messages.append(model_response)
+            st.chat_message("assistant").write(f"{model_response['content']}")
 
 
 if __name__ == "__main__":
