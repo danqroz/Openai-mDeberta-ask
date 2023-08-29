@@ -1,11 +1,6 @@
-# import sys
-import os
-
-# project_dir = os.path.dirname(os.path.abspath(__file__))
-# sys.path.append(project_dir)
-
 from models import create_knowledge_base, openai_model, mdeberta, utils
 
+import os
 from io import StringIO
 import streamlit as st
 from streamlit_toggle import st_toggle_switch
@@ -65,10 +60,10 @@ def _save_files(uploaded_files):
 def _create_index_for_files(selected_indexes):
     for index_name in selected_indexes:
         st.session_state[f"{index_name}_change"] += 1
-        st.write(f"gerando index para os embeddings: {index_name}")
-        create_knowledge_base.create_index(index_name)
+        with st.spinner(f"gerando index para os embeddings: {index_name}"):
+            create_knowledge_base.create_index(index_name)
     utils.remove_files()
-    st.write("Indexes gerados")
+    st.info("Indexes gerados", icon="🔥")
 
 
 def _ask_gpt(query):

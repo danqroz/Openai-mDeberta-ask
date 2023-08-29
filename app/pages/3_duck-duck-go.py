@@ -33,6 +33,7 @@ def update_tranlated_prompt(site_lang):
 
 def main():
     sidebar()
+    st.title("💬 Fale Com Seu Site")
     if "messages" not in st.session_state:
         st.session_state["messages"] = [
             {

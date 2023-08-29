@@ -1,13 +1,5 @@
-import sys
-import os
-
-# project_dir = os.path.dirname(os.path.abspath(__file__))
-# sys.path.append(project_dir)
 from models import ask_site
 
-# from ..models import create_knowledge_base, openai_model, utils
-import os
-from io import StringIO
 import streamlit as st
 
 
@@ -23,10 +15,8 @@ def _scrape_handler(site, scrape):
             páginas do site.',
             icon="⚠️",
         )
-        st.write("Fazendo scrape e carregando modelo...")
         st.session_state["site_chain"] = ask_site.load_site_chain(site=urls)
     else:
-        st.write("Site submetido, carregando modelo...")
         st.session_state["site_chain"] = ask_site.load_site_chain(
             site=[site],
         )
@@ -39,7 +29,8 @@ def sidebar():
         scrape = st.checkbox("Todo o site", key="scrape")
         submitted = st.button("Confirmar")
         if site and submitted:
-            _scrape_handler(site, scrape)
+            with st.spinner("Carregando o modelo..."):
+                _scrape_handler(site, scrape)
 
 
 def _ask_site(chain, query):
@@ -49,6 +40,7 @@ def _ask_site(chain, query):
 
 def main():
     sidebar()
+    st.title("💬 Fale Com Seu Site")
     if "messages" not in st.session_state:
         st.session_state["messages"] = [
             {
@@ -68,9 +60,7 @@ def main():
             st.info("Por favor, insira um link para continuar.")
             st.stop()
 
-        model_response = _ask_site(
-            chain=st.session_state["site_chain"], query=query
-        )
+        model_response = _ask_site(chain=st.session_state["site_chain"], query=query)
 
         st.session_state.messages.append(model_response)
         st.chat_message("assistant").write(f"{model_response['content']}")
