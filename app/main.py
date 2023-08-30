@@ -1,8 +1,4 @@
-# import sys
 import os
-
-# project_dir = os.path.dirname(os.path.abspath(__file__))
-# sys.path.append(project_dir)
 
 import openai
 import streamlit as st
@@ -26,7 +22,7 @@ def main():
     st.title("💬 Chatbot")
     if "messages" not in st.session_state:
         st.session_state["messages"] = [
-            {"role": "assistant", "content": "Como posso ajudar?"}
+            {"role": "assistant", "content": "How can I help you?"}
         ]
 
     for msg in st.session_state.messages:
@@ -34,7 +30,7 @@ def main():
 
     if query := st.chat_input():
         if not st.session_state["chatbot_api_key"]:
-            st.info("Por favor, insira uma chave de API para continuar.")
+            st.info("Please enter an API key to proceed.")
             st.stop()
         os.environ["OPENAI_API_KEY"] = st.session_state["chatbot_api_key"]
         openai.api_key = st.session_state["chatbot_api_key"]

@@ -17,7 +17,6 @@ def _check_index_existence(index_path):
         return None
 
     existent_index = [
-        # index.split(".")[0]
         os.path.splitext(index)[0]
         for index in os.listdir(index_path)
         if index.endswith(".pkl")

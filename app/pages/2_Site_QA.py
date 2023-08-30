@@ -11,8 +11,8 @@ def _scrape_handler(site, scrape):
     if scrape:
         urls = ask_site.get_urls(site)
         st.warning(
-            'Ao marcar a opção "Todo o site" será feito a leitura de todas as\
-            páginas do site.',
+            "By selecting the 'Entire site' option, the reading of all pages on the \
+            website will be performed.",
             icon="⚠️",
         )
         st.session_state["site_chain"] = ask_site.load_site_chain(site=urls)
@@ -25,11 +25,11 @@ def _scrape_handler(site, scrape):
 
 def sidebar():
     with st.sidebar:
-        site = st.text_input("Coloque seu site aqui", "https://example.com")
-        scrape = st.checkbox("Todo o site", key="scrape")
-        submitted = st.button("Confirmar")
+        site = st.text_input("Insert your Website here", "https://example.com")
+        scrape = st.checkbox("Entire Website", key="scrape")
+        submitted = st.button("Confirm")
         if site and submitted:
-            with st.spinner("Carregando o modelo..."):
+            with st.spinner("Loading model..."):
                 _scrape_handler(site, scrape)
 
 
@@ -40,12 +40,12 @@ def _ask_site(chain, query):
 
 def main():
     sidebar()
-    st.title("💬 Fale Com Seu Site")
+    st.title("💬 Talk With Your Website")
     if "messages" not in st.session_state:
         st.session_state["messages"] = [
             {
                 "role": "Site_Assistant",
-                "content": "Como posso ajudar?",
+                "content": "How can I help you?",
                 "sources": "code",
             }
         ]
@@ -57,7 +57,7 @@ def main():
         st.chat_message("user").write(query)
 
         if not st.session_state["site_chain"]:
-            st.info("Por favor, insira um link para continuar.")
+            st.info("Please provide a url to continue.")
             st.stop()
 
         model_response = _ask_site(chain=st.session_state["site_chain"], query=query)
@@ -65,7 +65,7 @@ def main():
         st.session_state.messages.append(model_response)
         st.chat_message("assistant").write(f"{model_response['content']}")
 
-        st.info(f"Essa resposta foi retirada de {model_response['sources']}", icon="ℹ️")
+        st.info(f"This answer was taken from: {model_response['sources']}", icon="ℹ️")
 
 
 if __name__ == "__main__":

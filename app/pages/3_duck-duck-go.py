@@ -4,10 +4,10 @@ import streamlit as st
 
 def sidebar():
     with st.sidebar:
-        url = st.text_input("Coloque seu site aqui", "https://example.com")
-        submitted = st.button("Confirmar")
+        url = st.text_input("Your url here!", "https://example.com")
+        submitted = st.button("Confirm")
         if url and submitted:
-            with st.spinner("Site submetido, carregando modelo..."):
+            with st.spinner("Url submitted, loading model..."):
                 url = duck_go.clean_url(url)
                 st.session_state["chat_model"] = duck_go.load_model()
                 st.session_state["translate_chain"] = duck_go.load_translate_chain()
@@ -57,10 +57,10 @@ def main():
             update_tranlated_prompt(st.session_state["site_language"])
             query = duck_go.translate_query(query, st.session_state["translate_chain"])
 
-        if "chat_model" not in st.session_state:
-            st.info("Por favor, insira um link para continuar.")
+        if "url" not in st.session_state:
+            st.info("Please, insert a link to continue.")
             st.stop()
-        with st.spinner("Aguardade um instante..."):
+        with st.spinner("Please wait a moment..."):
             model_response = _ask_duck_go(
                 url=st.session_state["url"],
                 query=query,

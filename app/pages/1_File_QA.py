@@ -27,9 +27,9 @@ avatars = {
 }
 
 embedding_models = {
-    "HuggingFace Index": "huggingf",
-    "ChatGPT Index": "openai",
-    "Todos": "Todos",
+    "HuggingFace Embedding": "huggingf",
+    "ChatGPT Embedding": "openai",
+    "All": "Todos",
 }
 
 
@@ -60,10 +60,10 @@ def _save_files(uploaded_files):
 def _create_index_for_files(selected_indexes):
     for index_name in selected_indexes:
         st.session_state[f"{index_name}_change"] += 1
-        with st.spinner(f"gerando index para os embeddings: {index_name}"):
+        with st.spinner(f"Generating indexes for the {index_name} embeddings"):
             create_knowledge_base.create_index(index_name)
     utils.remove_files()
-    st.info("Indexes gerados", icon="🔥")
+    st.info("Generated Embeddings", icon="🔥")
 
 
 def _ask_gpt(query):
@@ -90,8 +90,8 @@ def generate_response(query, model_name):
 def _no_model_selected_handler():
     no_model_selected_answer = {
         "role": "assistant",
-        "content": "Ops! Nenhum modelo foi selecionado. \
-        Por favor, selecione um modelo no campo a esquerda.",
+        "content": "Oops! No model has been selected.\
+                    Please choose a model from the left-hand menu.",
         "sources": "code",
     }
     st.session_state.messages.append(no_model_selected_answer)
@@ -101,9 +101,7 @@ def _no_model_selected_handler():
 def _no_embeddings_selected_handler(selected_embeddings):
     if not selected_embeddings:
         st.error(
-            "Por favor, você precisa selecionar um modelo embedding.\
-            Para conseguir uma chave, acesse: \
-            https://platform.openai.com/account/api-keys",
+            "Please, you need to select an embedding model",
             icon="🚨",
         )
         st.stop()
@@ -111,13 +109,13 @@ def _no_embeddings_selected_handler(selected_embeddings):
 
 def _no_api_key_handler():
     if not os.environ.get("OPENAI_API_KEY"):
-        st.error("Ops, parece que você não forneceu uma OpenAI API key", icon="🚨")
+        st.error("Ops, it looks like you don't provide an OpenAI Key", icon="🚨")
         st.stop()
 
 
 def _sidebar():
     with st.sidebar:
-        st.write("Escolha os modelos:")
+        st.write("Please choose at least one model:")
         options = ["mDeBERTa", "ChatGPT"]
         models_selected = [
             name.lower() for name in options if st_toggle_switch(name, label_after=True)
@@ -125,10 +123,10 @@ def _sidebar():
         if "chatgpt" in models_selected:
             _no_api_key_handler()
 
-        with st.expander("Faça o upload dos seu arquivos"):
+        with st.expander("Upload your files"):
             selected_embeddings = _select_index_names()
             uploaded_files = st.file_uploader(
-                "Escolha seus arquivos", accept_multiple_files=True, type=["pdf", "txt"]
+                "Choose files", accept_multiple_files=True, type=["pdf", "txt"]
             )
 
             submitted = st.button("Upload")
@@ -143,10 +141,10 @@ def _sidebar():
 
 def main():
     models_selected = _sidebar()
-    st.title("💬 Fale Com Seu Documento")
+    st.title("💬 Talk to your document")
     if "messages" not in st.session_state:
         st.session_state["messages"] = [
-            {"role": "fileQA_assistant", "content": "Como posso ajudar?"}
+            {"role": "fileQA_assistant", "content": "How can I help you?"}
         ]
 
     for msg in st.session_state.messages:
@@ -166,7 +164,7 @@ def main():
                 msg.write(f"{model_response['content']}")
 
             st.info(
-                f"Essa resposta foi retirada de: {model_response['sources']}", icon="ℹ️"
+                f"This answer was taken from: {model_response['sources']}", icon="ℹ️"
             )
 
 

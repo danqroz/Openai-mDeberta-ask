@@ -4,8 +4,6 @@ from langchain.prompts import PromptTemplate
 from langchain.chat_models import ChatOpenAI
 from langchain.schema.output_parser import StrOutputParser
 
-# from langchain.document_loaders import UnstructuredURLLoader
-# from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.tools import DuckDuckGoSearchResults
 from langchain.docstore.document import Document
 from langchain.vectorstores import FAISS
