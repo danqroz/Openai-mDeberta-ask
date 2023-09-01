@@ -45,25 +45,29 @@ The process may take a while when it is executed for the first time. Then run:
 docker-compose up
 ```
 
-If everything goes well, you will see the message "_You can now view your Streamlit app in your browser._". Then just type in your browser: "<http://localhost:8001/>" to access the application.
+If everything goes well, you will see the message "_You can now view your Streamlit app in your browser._". Then type in your browser: "<http://localhost:8001/>" to access the application.
 
 ## Main
 
 The main page is simply the chatgpt-3.5 turbo. You need to enter your OpenAI Key to be able to use it.
 
-![main](https://github.com/danqroz/QA-doc-and-site/assets/75531272/ec2b4d92-340a-4bf7-9f17-174d21063425)
+![main](https://github.com/danqroz/QA-doc-and-site/assets/75531272/89f31b4c-1bb9-4ada-9911-91fd29abde36)
 
 ## Ask File / Talk With Your Documents
 
 On _Ask File_ page, you can chat with this README that already had generated indexes and it is available for the models. You can ask any question about this project.
 
-You can also upload documents up to 200mb in .txt or .pdf format. To upload, you need to select one or more embedding models. The "HuggingFace embedding" will be used to generate the embeddings that will be indexed and available for mDeBERTa. The "OpenAI embedding" will be available for ChatGPT.
+![ask_file](https://github.com/danqroz/QA-doc-and-site/assets/75531272/611c279c-68ce-4488-816a-c565d11cd908)
 
-You can also upload multiple documents at once. After successfully submitting the files, you can already chat with the documents, both new and old ones for which you have already generated indexes. At the end, the source from which the answer was taken is provided.
+You can also upload documents up to 200 MB in .txt or .pdf format. To upload, you need to select one or more embedding models. The "HuggingFace embedding" will be used to generate the embeddings that will be indexed and available for mDeBERTa. The "OpenAI embedding" will be available for ChatGPT.
+
+You can also upload multiple documents at once. After successfully submitting the files, you can chat with the documents, both new and old ones for which you have already generated indexes. The source from which the answer was taken is provided at the end.
 
 ## Website QA / Talk With Your Website
 
 In this section, the user must provide a URL before asking questions. By default, only the provided page will be scraped, but the user has the option to select "_Entire Website_" where the entire website will be scraped. Keep in mind that this action can be costly, as the entire website will be embedded using the "text-embedding-ada-002" model from OpenAI.
+
+![website_qa](https://github.com/danqroz/QA-doc-and-site/assets/75531272/450df577-5ab5-4d61-8b92-f84b3f2c76ed)
 
 After entering a valid URL and deciding whether or not to use the "_Entire Website_", you can ask questions about the provided website.
 
@@ -72,6 +76,8 @@ After entering a valid URL and deciding whether or not to use the "_Entire Websi
 The high cost of processing an entire website, as mentioned in the previous section, can be bypassed by using a free embedding model, initially. For example, we could use the model that generates embeddings for mDeBERTa: ["intfloat/multilingual-e5-base"](https://huggingface.co/intfloat/multilingual-e5-base).
 
 However, I decided to do this test using the Duck-Duck-Go Search. Since we don't have an intelligent model like ChatGPT to automatically translate the information, we have to check first if the language of the provided website and the language in which the user wrote the question are the same. If necessary, translate the user's question to the same language as the website.
+
+![duck_duck_go](https://github.com/danqroz/QA-doc-and-site/assets/75531272/618d6353-8fb5-4474-a495-0493c97a6baf)
 
 The flow can then be described in the following steps. 1. Translate the user's query, if necessary. 2. Use the Duck Duck Go API to search the user's question on the web with the following restriction: the answer must be in the same domain as the one specified by the user. 3. We pass the snippets (these are similar to the returned by semantic search in QA flow) with the answers found by Duck Duck Go and the user's question to ChatGPT. 4. The model takes care of finding the answer and translating it back, if necessary, to the user's language.
 
