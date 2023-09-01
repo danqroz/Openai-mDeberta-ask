@@ -1,11 +1,13 @@
+from app.models import utils
+
 import os
 import re
+import langdetect
 
 import streamlit as st
 import torch
 from transformers import AutoModelForQuestionAnswering, AutoTokenizer
 
-from app.models import utils
 
 PATTERN = re.compile(r"\[CLS\]|\[SEP\]")
 MAX_SEQ_LEN = 512
@@ -30,11 +32,8 @@ def _get_top_answers(
     score_list: list[float],
 ):
     tupla_score = list(enumerate(score_list))
-    # ordenar a lista em ordem decrescente
     tupla_score = sorted(tupla_score, key=lambda x: x[1], reverse=True)
-    # obtendo os índices correspondentes em answer_list
     indices_answer = [tupla[0] for tupla in tupla_score]
-    # obtendo os elementos correspondentes em cada lista
     score_list = [score_list[i] for i in indices_answer]
     answer_list = [answer_list[i] for i in indices_answer]
 
@@ -67,8 +66,14 @@ def _answers_from_docs(tokenizer, model, docs, question):
         answer = tokenizer.decode(input_ids[answer_start:answer_end])
         no_special_token_answer = re.sub(PATTERN, "", answer).strip()
 
-        if no_special_token_answer and answer_start_score > MIN_SCORE:
-            # Get the most likely end of answer with the argmax of the score
+        if (
+            no_special_token_answer
+            and (answer_start_score > MIN_SCORE)
+            and (
+                langdetect.detect(no_special_token_answer)
+                == langdetect.detect(question)
+            )
+        ):
             answers.append(no_special_token_answer)
             scores.append(answer_start_score)
             sources.append(source)

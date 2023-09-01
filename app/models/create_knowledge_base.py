@@ -40,7 +40,6 @@ def _split_text():
 
 def create_index(embedding_name="huggingf"):
     index_path, embeddings = utils.setup_for_embeddings(
-        # openai_api_key=openai_api_key,
         embedding_name,
         return_embeddings=True,
     )

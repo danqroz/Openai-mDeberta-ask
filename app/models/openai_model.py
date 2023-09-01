@@ -8,13 +8,13 @@ from langchain.prompts import PromptTemplate
 
 K = 6
 PROMPT_TEMPLATE = """
-Use a seguinte passagem de texto para responder a pergunta ao final.
-Se você não souber a resposta ou a resposta não estiver no texto apenas diga que não
-sabe. É importante que você só responda se a resposta estiver no texto abaixo:
-{context}
+Use the following pieces of context to answer the question at the end. If you don't know
+the answer or you think the answer is not in the context, please do not answer.
 
-Pergunta: {question}
-Resposta em português:
+context: {context}
+
+Question: {question}
+Answer in question language:
 """
 
 PROMPT = PromptTemplate(

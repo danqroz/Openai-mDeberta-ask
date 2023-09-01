@@ -33,12 +33,12 @@ def update_tranlated_prompt(site_lang):
 
 def main():
     sidebar()
-    st.title("💬 Fale Com Seu Site")
+    st.title("💬 Talk with Your Website")
     if "messages" not in st.session_state:
         st.session_state["messages"] = [
             {
                 "role": "Site_Assistant",
-                "content": "Como posso ajudar?",
+                "content": "How can I help you?",
                 "sources": "code",
             }
         ]
