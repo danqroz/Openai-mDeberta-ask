@@ -6,7 +6,7 @@
   - [Introdução](#introdução)
   - [Instalação](#instalação)
   - [Main](#main)
-  - [Ask File / Talk With Your Documents](#ask-file--talk-with-your-documents)
+  - [File QA / Talk With Your Documents](#file-qa--talk-with-your-documents)
   - [Website QA / Talk With Your Website](#website-qa--talk-with-your-website)
   - [Duck Duck go](#duck-duck-go)
 
@@ -14,7 +14,7 @@ O objetivo do projeto é explorar algumas funções do langchain, comparar respo
 
 ## Introdução
 
-Os modelos utilizados nesse projeto foram o ChatGPT e o [mDeBERTa](https://huggingface.co/timpal0l/mdeberta-v3-base-squad2). Este último apenas para responder perguntas com base em documentos fornecidos.
+Os modelos utilizados nesse projeto foram o ChatGPT-3.5 turbo e o [mDeBERTa](https://huggingface.co/timpal0l/mdeberta-v3-base-squad2). Este último apenas para responder perguntas com base em documentos fornecidos.
 
 Neste aplicativo temos uma série de modelos de QA (_question answering_), isto é, cada página tem a função de responder perguntas com base em um contexto fornecido pelo próprio usuário. Estes contextos podem ser de arquivo ou sites.
 
@@ -51,9 +51,9 @@ Se tudo correr bem, aparecerá a mensagem "_You can now view your Streamlit app 
 
 A página inicial (main) é simplesmente o chatgpt-3.5 turbo. Basta inserir sua OpenAI Key para poder utilizar.
 
-## Ask File / Talk With Your Documents
+## File QA / Talk With Your Documents
 
-Na página _ask File_ é possível conversar com esse LEIAME que já teve índexes gerados e está disponível para os modelos. Você pode fazer qualquer pergunta sobre esse projeto.
+Na página _File QA_ é possível conversar com esse LEIAME que já teve índexes gerados e está disponível para os modelos. Você pode fazer qualquer pergunta sobre esse projeto.
 
 Você também pode enviar documentos de até 200mb no formato .txt ou .pdf. Para fazer o upload é necessário selecionar um ou mais modelo embedding. O "HuggingFace embedding" será usado para gerar os embeddings que serão indexados e estarão disponível para o mDeBERTa. Já o "OpenAi embedding" ficará disponível para o ChatGPT.
 

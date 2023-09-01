@@ -6,7 +6,7 @@
   - [Introduction](#introduction)
   - [Installation](#installation)
   - [Main](#main)
-  - [Ask File / Talk With Your Documents](#ask-file--talk-with-your-documents)
+  - [File QA / Talk With Your Documents](#file-qa--talk-with-your-documents)
   - [Website QA / Talk With Your Website](#website-qa--talk-with-your-website)
   - [Duck Duck go](#duck-duck-go)
 
@@ -14,7 +14,7 @@ The goal of this project is to explore some functions of Langchain, compare Chat
 
 ## Introduction
 
-The models used in this project were ChatGPT and mDeBERTa. The latter was used only to answer questions based on provided documents.
+The models used in this project were ChatGPT-3.5 turbo and [mDeBERTa](https://huggingface.co/timpal0l/mdeberta-v3-base-squad2). The latter was used only to answer questions based on provided documents.
 
 In this application, we have a variety of QA (question answering) models, which means that each page has the function of answering questions based on a context provided by the user themselves. These contexts can come from files or websites.
 
@@ -53,9 +53,9 @@ The main page is simply the chatgpt-3.5 turbo. You need to enter your OpenAI Key
 
 ![main](https://github.com/danqroz/QA-doc-and-site/assets/75531272/89f31b4c-1bb9-4ada-9911-91fd29abde36)
 
-## Ask File / Talk With Your Documents
+## File QA / Talk With Your Documents
 
-On _Ask File_ page, you can chat with this README that already had generated indexes and it is available for the models. You can ask any question about this project.
+On _File QA_ page, you can chat with this README that already had generated indexes and it is available for the models. You can ask any question about this project.
 
 ![ask_file](https://github.com/danqroz/QA-doc-and-site/assets/75531272/611c279c-68ce-4488-816a-c565d11cd908)
 
@@ -90,3 +90,8 @@ The flow can then be described in the following steps. 1. Translate the user's q
 
 Note that in this way, we do not generate the semantic indexes. Duck Duck Go itself takes care of searching for the information we want. Although the model seems to work well, it is slower than QA flow. This is because a knowledge base with indexes is not created to perform the semantic search. In other words, the entire flow is repeated for each question.
 
+<style>
+    body {
+        text-align: justify;
+    }
+</style>
