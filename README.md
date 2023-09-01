@@ -82,8 +82,3 @@ The flow can then be described in the following steps. 1. Translate the user's q
 
 Note that in this way, we do not generate the semantic indexes. Duck Duck Go itself takes care of searching for the information we want. Although the model seems to work well, it is slower than QA flow. This is because a knowledge base with indexes is not created to perform the semantic search. In other words, the entire flow is repeated for each question.
 
-<style>
-    body {
-        text-align: justify;
-    }
-</style>
