@@ -51,6 +51,8 @@ If everything goes well, you will see the message "_You can now view your Stream
 
 The main page is simply the chatgpt-3.5 turbo. You need to enter your OpenAI Key to be able to use it.
 
+![main](https://github.com/danqroz/QA-doc-and-site/assets/75531272/ec2b4d92-340a-4bf7-9f17-174d21063425)
+
 ## Ask File / Talk With Your Documents
 
 On _Ask File_ page, you can chat with this README that already had generated indexes and it is available for the models. You can ask any question about this project.
