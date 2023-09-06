@@ -8,7 +8,7 @@ description = "Talk with your document and site using OpenAI or mDeBERTa"
 version = "1.0.0"
 readme = "README.md"
 keywords = ["mDeBERTa", "NLP", "NLU", "OpenAI", "Langchain", "QA"]
-license = {text = "BSD 3-Clause License"}
+license = {text = "MIT License"}
 classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
