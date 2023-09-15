@@ -1,8 +1,8 @@
-# 🦜️🔗 Langchain "converse com..." Demo
+# 🦜️🔗 Langchain "Talk to document or site" Demo
 
 ![Python](https://img.shields.io/badge/python-3.10-blue)
 
-- [🦜️🔗 Langchain "converse com..." Demo](#️-langchain-converse-com-demo)
+- [🦜️🔗 Langchain "Talk to document or site" Demo](#️-langchain-talk-to-document-or-site-demo)
   - [Introduction](#introduction)
   - [Installation](#installation)
   - [Main](#main)
