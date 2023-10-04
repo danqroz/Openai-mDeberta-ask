@@ -15,9 +15,8 @@ if "huggingf_change" not in st.session_state:
 if os.environ.get("OPENAI_API_KEY"):
     openai_chain = openai_model.load_chain(st.session_state["openai_change"])
 
-index_hf = mdeberta.load_indexes(index_change=st.session_state["huggingf_change"])
-
-mdeberta_tokenizer, mdeberta_model = mdeberta.load_model()
+index_hf = utils.load_indexes(index_change=st.session_state["huggingf_change"])
+mdeberta_model = mdeberta.load_model()
 
 avatars = {
     "user": "\U0001F600",
@@ -72,12 +71,7 @@ def _ask_gpt(query):
 
 
 def _ask_mdeberta(query):
-    answer, sources = mdeberta.run(
-        mdeberta_tokenizer,
-        mdeberta_model,
-        query,
-        index=index_hf,
-    )
+    answer, sources = mdeberta_model.run(query, index_hf)
     return {"role": "mdeberta", "content": answer, "sources": sources}
 
 
